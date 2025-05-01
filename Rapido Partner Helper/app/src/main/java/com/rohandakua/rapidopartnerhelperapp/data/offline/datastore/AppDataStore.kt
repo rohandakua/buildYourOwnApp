@@ -27,7 +27,7 @@ class AppDataStore (
             preferences[USER_KEY] = gson.toJson(user)
         }
     }
-    suspend fun getUser (): Flow<RapidoPartner?> {
+     fun getUser (): Flow<RapidoPartner?> {
         return context.appDataStore.data.map {
             preferences ->
             preferences[USER_KEY]?.let{
@@ -46,7 +46,7 @@ class AppDataStore (
             preferences[DARK_MODE_KEY] = darkMode
         }
     }
-    suspend fun getDarkMode(): Flow<Boolean> {
+    fun getDarkMode(): Flow<Boolean> {
         return context.appDataStore.data.map {
             preferences ->
             preferences[DARK_MODE_KEY] ?: false

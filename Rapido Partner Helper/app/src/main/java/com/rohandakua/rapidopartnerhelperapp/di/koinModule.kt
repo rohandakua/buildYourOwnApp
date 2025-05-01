@@ -1,5 +1,6 @@
 package com.rohandakua.rapidopartnerhelperapp.di
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -15,6 +16,10 @@ import com.rohandakua.rapidopartnerhelperapp.domain.repositoryInterfaces.Setting
 import com.rohandakua.rapidopartnerhelperapp.domain.usecase.AuthUseCase
 import com.rohandakua.rapidopartnerhelperapp.domain.usecase.JobManagementUseCase
 import com.rohandakua.rapidopartnerhelperapp.domain.usecase.SettingsUseCase
+import com.rohandakua.rapidopartnerhelperapp.presentation.viewModel.HomeScreenViewModel
+import com.rohandakua.rapidopartnerhelperapp.presentation.viewModel.LoginScreenViewModel
+import com.rohandakua.rapidopartnerhelperapp.presentation.viewModel.SettingScreenViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import kotlin.math.sin
 
@@ -32,8 +37,17 @@ val koinModule  = module {
 
     single<SettingRepository> {SettingRepositoryImplementation(get())}
 
-    // Use Cases
     single { AuthUseCase(get()) }
     single { JobManagementUseCase(get()) }
     single { SettingsUseCase(get()) }
+
+    viewModel { (partnerId: Long) ->
+        HomeScreenViewModel(
+            jobManagementUseCase = get(),  partnerId = partnerId
+        )
+    }
+
+    viewModel { LoginScreenViewModel(get(), get()) }
+
+    viewModel { SettingScreenViewModel(get()) }
 }

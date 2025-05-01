@@ -13,7 +13,7 @@ class SettingRepositoryImplementation(
 ):SettingRepository {
     val TAG = "SettingRepositoryImplementation"
 
-    override suspend fun getDarkMode(): Flow<Boolean> {
+    override  fun getDarkMode(): Flow<Boolean> {
         return appDataStore.getDarkMode()
     }
 
@@ -21,7 +21,7 @@ class SettingRepositoryImplementation(
         return appDataStore.saveUser(user)
     }
 
-    override suspend fun getUser(): Flow<RapidoPartner?> {
+    override  fun getUser(): Flow<RapidoPartner?> {
         return appDataStore.getUser()
     }
 
