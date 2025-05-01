@@ -12,6 +12,9 @@ import com.rohandakua.rapidopartnerhelperapp.data.repositoryImplementation.Setti
 import com.rohandakua.rapidopartnerhelperapp.domain.repositoryInterfaces.AuthInterface
 import com.rohandakua.rapidopartnerhelperapp.domain.repositoryInterfaces.DayOfJobRepository
 import com.rohandakua.rapidopartnerhelperapp.domain.repositoryInterfaces.SettingRepository
+import com.rohandakua.rapidopartnerhelperapp.domain.usecase.AuthUseCase
+import com.rohandakua.rapidopartnerhelperapp.domain.usecase.JobManagementUseCase
+import com.rohandakua.rapidopartnerhelperapp.domain.usecase.SettingsUseCase
 import org.koin.dsl.module
 import kotlin.math.sin
 
@@ -29,5 +32,8 @@ val koinModule  = module {
 
     single<SettingRepository> {SettingRepositoryImplementation(get())}
 
-
+    // Use Cases
+    single { AuthUseCase(get()) }
+    single { JobManagementUseCase(get()) }
+    single { SettingsUseCase(get()) }
 }
