@@ -8,8 +8,8 @@ class AuthInterfaceImplementation (
     private val firebaseDatabaseHandler: FirebaseDatabaseHandler
 ) : AuthInterface {
     override suspend fun login(rapidoPartnerId: Int, password: String): Boolean {
-        if(rapidoPartnerId.toString().length != 10){
-            throw IllegalArgumentException("Rapido Partner ID must be 10 digits")
+        if(rapidoPartnerId.toString().length != 6){
+            throw IllegalArgumentException("Rapido Partner ID must be 6 digits")
         }
         if(password.length<8){
             throw IllegalArgumentException("Password must be at least 8 characters")
@@ -18,8 +18,8 @@ class AuthInterfaceImplementation (
     }
 
     override suspend fun getUserProfile(rapido_partner_id: Int): RapidoPartner? {
-        if(rapido_partner_id.toString().length != 10){
-            throw IllegalArgumentException("Rapido Partner ID must be 10 digits")
+        if(rapido_partner_id.toString().length != 6){
+            throw IllegalArgumentException("Rapido Partner ID must be 6 digits")
         }
         return firebaseDatabaseHandler.getUserProfile(rapido_partner_id)
     }

@@ -17,7 +17,7 @@ class LoginScreenViewModel(
     private val settingsUseCase: SettingsUseCase
 ) : ViewModel() {
     // staates variables
-    var loginText by mutableStateOf("")
+    var rapidoPartnerIdText by mutableStateOf("")
     var passwordText by mutableStateOf("")
 
     private val _loginResult = MutableLiveData<Boolean>()
@@ -30,7 +30,7 @@ class LoginScreenViewModel(
     val darkMode: LiveData<Boolean> get() = _darkMode
 
     fun login() {
-        val rapidoPartnerId = loginText.toIntOrNull()
+        val rapidoPartnerId = rapidoPartnerIdText.toIntOrNull()
         val password = passwordText
 
         if (rapidoPartnerId != null && password.isNotEmpty()) {

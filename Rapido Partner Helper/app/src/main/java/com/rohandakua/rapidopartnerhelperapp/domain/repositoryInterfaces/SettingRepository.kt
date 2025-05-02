@@ -11,5 +11,5 @@ interface SettingRepository {
      fun getUser (): Flow<RapidoPartner?>
     suspend fun logoutUser()
     suspend fun saveDarkMode(darkMode: Boolean)
-
+    suspend fun updateUserEarnings(partnerId: Int, earnings: Double)
 }

@@ -28,6 +28,7 @@ import com.lottiefiles.dotlottie.core.compose.runtime.DotLottieController
 import com.lottiefiles.dotlottie.core.compose.ui.DotLottieAnimation
 import com.lottiefiles.dotlottie.core.util.DotLottieSource
 import com.rohandakua.rapidopartnerhelperapp.R
+import com.rohandakua.rapidopartnerhelperapp.navigation.Screen
 import com.rohandakua.rapidopartnerhelperapp.presentation.viewModel.LoginScreenViewModel
 import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainBackgroundColor
 import kotlinx.coroutines.async
@@ -43,7 +44,6 @@ fun SplashScreen(
     navController: NavHostController,
     loginScreenViewModel: LoginScreenViewModel = koinViewModel(),
 ) {
-    val orientation = LocalConfiguration.current.orientation
     val isSignedIn = loginScreenViewModel.loginResult
     val dotLottieController = remember { DotLottieController() }
     val animationComplete = remember { mutableStateOf(false)
@@ -59,15 +59,20 @@ fun SplashScreen(
     LaunchedEffect(animationComplete.value) {
         if (animationComplete.value) {
             if (isSignedIn.value == true) {
-
+                navController.navigate(Screen.Home.route){
+                    popUpTo(Screen.Splash.route){inclusive = true}
+                }
             } else {
+                navController.navigate(Screen.Login.route){
+                    popUpTo(Screen.Splash.route){inclusive = true}
+                }
 
             }
         }
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = mainBackgroundColor)
     ) {
@@ -84,7 +89,7 @@ fun SplashScreen(
             DotLottieAnimation(
                 source = DotLottieSource.Url("https://lottie.host/3da2776c-0357-4815-851f-d5a276f5eaa7/63auvFhzz9.lottie"),
                 autoplay = true,
-                loop = true,
+                loop = false,
                 speed = 1f,
                 useFrameInterpolation = true,
                 playMode = Mode.FORWARD,

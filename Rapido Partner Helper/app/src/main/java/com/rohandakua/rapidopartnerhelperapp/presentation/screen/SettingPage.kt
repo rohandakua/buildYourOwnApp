@@ -29,26 +29,36 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.rohandakua.rapidopartnerhelperapp.R
 import com.rohandakua.rapidopartnerhelperapp.domain.helperFunctions.gradientBrush
+import com.rohandakua.rapidopartnerhelperapp.navigation.Screen
 import com.rohandakua.rapidopartnerhelperapp.presentation.composables.NormalText
 import com.rohandakua.rapidopartnerhelperapp.presentation.composables.RatingBar
+import com.rohandakua.rapidopartnerhelperapp.presentation.viewModel.SettingScreenViewModel
 import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainBackgroundColor
 import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainCardBackground
 import com.rohandakua.rapidopartnerhelperapp.ui.theme.secondaryTextColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.collectAsState
 
 @Composable
-@Preview
+//@Preview
 fun SettingScreen (
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    settingScreenViewModel: SettingScreenViewModel = koinViewModel()
 
-){
-    var name = "Rohan Dakua" // // take it from the user object
-    var rating = 3.5 // take it from the user object
-    val earnings : Double = 8700.00 // take it from the user object in setting screen view model
-    var darkMode : Boolean = true   // settingScreenViewModel.darkMode
+    ){
+    val user = settingScreenViewModel.user.collectAsState().value
+    val name = user?.name ?: "name"
+    val rating = user?.rating ?: 5.0
+    val earnings = user?.earning ?: 1500.0
+    val darkMode = settingScreenViewModel.darkMode.collectAsState().value ?: false
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -107,7 +117,7 @@ fun SettingScreen (
             ) {
                 NormalText(text = "Dark Mode", textSize = 20)
                 Switch(checked = darkMode, onCheckedChange = {
-                    darkMode = it // settingScreenViewModel.saveDarkMode(it)
+                    settingScreenViewModel.saveDarkMode(it)
                 }, thumbContent = {
                     Icon(painter = painterResource(id = R.drawable.baseline_check_circle_outline_24),
                         contentDescription = "check",
@@ -120,7 +130,7 @@ fun SettingScreen (
                             }
                             .size(25.dp)
                             .clickable {
-                                darkMode = !darkMode // settingScreenViewModel.saveDarkMode(!darkMode)
+                                settingScreenViewModel.saveDarkMode(!darkMode)
                             })
                 }, colors = SwitchDefaults.colors(
                     checkedTrackColor = secondaryTextColor,
@@ -140,7 +150,7 @@ fun SettingScreen (
                 NormalText(text = "Made with ❤️ by Rohan Dakua", textSize = 16)
                 Spacer(modifier = Modifier.height(10.dp))
                 Icon(painter = painterResource(id = R.drawable.baseline_logout_24),
-                    contentDescription = "add new workout",
+                    contentDescription = "logout",
                     tint = Color.Black,
                     modifier = Modifier
                         .drawBehind {
@@ -152,9 +162,8 @@ fun SettingScreen (
                         }
                         .size(25.dp)
                         .clickable {
-                            CoroutineScope(Dispatchers.IO).launch {
-
-                            }
+                           settingScreenViewModel.logoutUser()
+                            navController.navigate(Screen.Login.route)
                         }
 
                 )

@@ -1,11 +1,13 @@
 package com.rohandakua.rapidopartnerhelperapp.di
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
 import com.google.firebase.Firebase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.rohandakua.rapidopartnerhelperapp.data.offline.datastore.AppDataStore
 import com.rohandakua.rapidopartnerhelperapp.data.offline.roomDb.dao.DayOfJobDao
+import com.rohandakua.rapidopartnerhelperapp.data.offline.roomDb.db.AppDatabase
 import com.rohandakua.rapidopartnerhelperapp.data.online.firebase.FirebaseDatabaseHandler
 import com.rohandakua.rapidopartnerhelperapp.data.repositoryImplementation.AuthInterfaceImplementation
 import com.rohandakua.rapidopartnerhelperapp.data.repositoryImplementation.DayOfJobRepositoryImplementation
@@ -33,6 +35,16 @@ val koinModule  = module {
 
     single<AuthInterface> {AuthInterfaceImplementation(get())}
 
+    single {
+        Room.databaseBuilder(
+            get(), // context
+            AppDatabase::class.java,
+            "rapido_db"
+        ).build()
+    }
+
+    single<DayOfJobDao> { get<AppDatabase>().dayOfJobDao() }
+
     single<DayOfJobRepository> { DayOfJobRepositoryImplementation(get())}
 
     single<SettingRepository> {SettingRepositoryImplementation(get())}
@@ -43,7 +55,9 @@ val koinModule  = module {
 
     viewModel { (partnerId: Long) ->
         HomeScreenViewModel(
-            jobManagementUseCase = get(),  partnerId = partnerId
+            jobManagementUseCase = get(),
+            settingsUseCase = get(),
+            partnerId = partnerId
         )
     }
 

@@ -34,5 +34,6 @@ class SettingScreenViewModel(
         viewModelScope.launch {
             settingsUseCase.logoutUser()
         }
+
     }
 }

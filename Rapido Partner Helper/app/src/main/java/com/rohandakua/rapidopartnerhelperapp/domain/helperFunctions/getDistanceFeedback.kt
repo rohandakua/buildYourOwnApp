@@ -1,7 +1,8 @@
 package com.rohandakua.rapidopartnerhelperapp.domain.helperFunctions
 
-fun getDistanceFeedback(distance: Double): String {
+fun getDistanceFeedback(distance: Double?): String {
     return when {
+        distance == null -> "Distance data is unavailable."
         distance > 150 -> "You've driven over 150 km today. Please take a break for your safety!"
         distance > 100 -> "You've driven a lot today. Consider taking a short rest."
         distance in 60.0..100.0 -> "Great job! You're doing really well today."

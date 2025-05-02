@@ -11,6 +11,8 @@ data class RapidoPartnerUiModel(
     val gender: Char?,
     val age: Int?
 ) {
+
+
     companion object {
         fun fromEntity(entity: RapidoPartner): RapidoPartnerUiModel {
             return RapidoPartnerUiModel(
@@ -19,7 +21,7 @@ data class RapidoPartnerUiModel(
                 rating = entity.rating,
                 imageUrl = entity.imageUrl,
                 earning = entity.earning,
-                gender = entity.gender,
+                gender = entity.gender!!.toCharArray()[0],
                 age = entity.age
             )
         }
@@ -31,7 +33,7 @@ data class RapidoPartnerUiModel(
                 rating = uiModel.rating,
                 imageUrl = uiModel.imageUrl,
                 earning = uiModel.earning,
-                gender = uiModel.gender,
+                gender = uiModel.gender.toString(),
                 age = uiModel.age
             )
         }

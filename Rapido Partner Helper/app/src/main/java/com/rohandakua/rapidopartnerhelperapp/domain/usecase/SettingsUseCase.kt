@@ -26,4 +26,8 @@ class SettingsUseCase(
     suspend fun saveDarkMode(darkMode: Boolean) {
         settingsRepository.saveDarkMode(darkMode)
     }
+
+    suspend fun updateUserEarnings(partnerId: Int, earnings: Double) {
+        settingsRepository.updateUserEarnings(partnerId, earnings)
+    }
 } 
