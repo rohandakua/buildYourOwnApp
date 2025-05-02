@@ -6,6 +6,7 @@ import com.rohandakua.rapidopartnerhelperapp.data.offline.roomDb.entity.RapidoPa
 import com.rohandakua.rapidopartnerhelperapp.domain.repositoryInterfaces.SettingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class SettingRepositoryImplementation(
@@ -42,6 +43,20 @@ class SettingRepositoryImplementation(
             }
         }catch (e : Exception){
             Log.e(TAG, "error in saving the dark mode: ${e.message}")
+        }
+    }
+
+    override suspend fun updateUserEarnings(partnerId: Int, earnings: Double) {
+        try {
+            withContext(Dispatchers.IO) {
+                val user = appDataStore.getUser().first()
+                user?.let { currentUser ->
+                    val updatedUser = currentUser.copy(earning = (currentUser.earning ?: 0.0) + earnings)
+                    appDataStore.saveUser(updatedUser)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "error in updating user earnings: ${e.message}")
         }
     }
 }

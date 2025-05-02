@@ -50,15 +50,16 @@ import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainTextColor
 @Composable
 fun DailyTargetBox(
     modifier: Modifier = Modifier,
-    showDialog: Boolean ,
-    onDismiss: () -> Unit ,
-    onConfirm: (Double, Int, Double) -> Unit ,
-    greetingText: String
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: (Double, Int, Double) -> Unit,
+    greetingText: String,
+    isFirstVisit: Boolean = false
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(color = mainBackgroundColor)  // Color(0xFF10110f)
+            .background(color = mainBackgroundColor)
             .safeDrawingPadding()
     ) {
         Column(
@@ -84,17 +85,9 @@ fun DailyTargetBox(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-
-                    // Distance
-
-                    // time taken
-
-                    // fare
-                    /////////////////
                     var distance by remember { mutableStateOf("") }
                     var timeTaken by remember { mutableStateOf("") }
                     var fare by remember { mutableStateOf("") }
-
 
                     var distanceError by remember { mutableStateOf<String?>(null) }
                     var timeTakenError by remember { mutableStateOf<String?>(null) }
@@ -118,7 +111,7 @@ fun DailyTargetBox(
                                     NormalText(text = greetingText, textSize = 28)
                                     Spacer(Modifier.size(10.dp))
                                     NormalText(
-                                        text = "Set Daily Target" ,
+                                        text = "Set Daily Target",
                                         textSize = 24
                                     )
                                 }
@@ -271,8 +264,6 @@ fun DailyTargetBox(
                                     }
                                 }
                             },
-
-
                             confirmButton = {
                                 Button(
                                     onClick = {
@@ -300,33 +291,28 @@ fun DailyTargetBox(
                                     NormalText(text = "OK", textSize = 18)
                                 }
                             },
-                            dismissButton = {
-                                Button(
-                                    onClick = onDismiss,
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = mainCardBackground,
-                                        disabledContainerColor = mainCardBackground
-                                    )
-                                ) {
-                                    NormalText(text = "Cancel", textSize = 18)
+                            dismissButton = if (!isFirstVisit) {
+                                {
+                                    Button(
+                                        onClick = onDismiss,
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = mainCardBackground,
+                                            disabledContainerColor = mainCardBackground
+                                        )
+                                    ) {
+                                        NormalText(text = "Cancel", textSize = 18)
+                                    }
                                 }
-                            },
+                            } else null,
                             containerColor = mainBackgroundColor,
                             properties = DialogProperties(
-                                dismissOnBackPress = true,
-                                dismissOnClickOutside = true
+                                dismissOnBackPress = !isFirstVisit,
+                                dismissOnClickOutside = !isFirstVisit
                             )
                         )
                     }
-                    ///////////////////
-
-
                 }
-
-
             }
-
-
         }
     }
 }

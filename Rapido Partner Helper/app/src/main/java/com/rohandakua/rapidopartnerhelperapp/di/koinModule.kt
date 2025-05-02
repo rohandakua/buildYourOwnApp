@@ -55,7 +55,9 @@ val koinModule  = module {
 
     viewModel { (partnerId: Long) ->
         HomeScreenViewModel(
-            jobManagementUseCase = get(),  partnerId = partnerId
+            jobManagementUseCase = get(),
+            settingsUseCase = get(),
+            partnerId = partnerId
         )
     }
 

@@ -44,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.collectAsState
 
 @Composable
 //@Preview
@@ -53,11 +54,11 @@ fun SettingScreen (
     settingScreenViewModel: SettingScreenViewModel = koinViewModel()
 
     ){
-    var user = settingScreenViewModel.user // take it from the user object
-    var name = user!!.value!!.name ?: "name" // // take it from the user object
-    var rating = user!!.value!!.rating?: 5.0 // take it from the user object
-    val earnings : Double = user.value!!.earning?: 1500.0 // take it from the user object in setting screen view model
-    var darkMode : StateFlow<Boolean> =  settingScreenViewModel.darkMode
+    val user = settingScreenViewModel.user.collectAsState().value
+    val name = user?.name ?: "name"
+    val rating = user?.rating ?: 5.0
+    val earnings = user?.earning ?: 1500.0
+    val darkMode = settingScreenViewModel.darkMode.collectAsState().value ?: false
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -115,7 +116,7 @@ fun SettingScreen (
                 verticalAlignment = Alignment.Top
             ) {
                 NormalText(text = "Dark Mode", textSize = 20)
-                Switch(checked = darkMode.value?: true, onCheckedChange = {
+                Switch(checked = darkMode, onCheckedChange = {
                     settingScreenViewModel.saveDarkMode(it)
                 }, thumbContent = {
                     Icon(painter = painterResource(id = R.drawable.baseline_check_circle_outline_24),
@@ -129,7 +130,7 @@ fun SettingScreen (
                             }
                             .size(25.dp)
                             .clickable {
-                                settingScreenViewModel.saveDarkMode(!darkMode.value)
+                                settingScreenViewModel.saveDarkMode(!darkMode)
                             })
                 }, colors = SwitchDefaults.colors(
                     checkedTrackColor = secondaryTextColor,

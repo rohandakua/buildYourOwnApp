@@ -12,6 +12,7 @@ import com.rohandakua.rapidopartnerhelperapp.domain.model.DayOfJobUiModel
 import com.rohandakua.rapidopartnerhelperapp.domain.model.RapidoPartnerUiModel
 import com.rohandakua.rapidopartnerhelperapp.domain.usecase.JobManagementUseCase
 import com.rohandakua.rapidopartnerhelperapp.domain.usecase.SettingsUseCase
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -19,7 +20,8 @@ import java.util.Locale
 
 class HomeScreenViewModel(
     private val jobManagementUseCase: JobManagementUseCase,
-    private val partnerId: Long = 1
+    private val settingsUseCase: SettingsUseCase,
+    private val partnerId: Long
 ) : ViewModel() {
     val TAG = "HomeScreenViewModel"
     private val _currentJob = MutableLiveData<DayOfJobUiModel>()
@@ -53,7 +55,7 @@ class HomeScreenViewModel(
     init {
         loadCurrentJob()
         _greatingMessage.value = getGreetings(_partnerName.value.toString())
-        _rideMessage.value = getRideMessage(_currentJob.value!!.totalTimeTaken?: 0)
+        _rideMessage.value = getRideMessage(_currentJob.value?.totalTimeTaken ?: 0)
     }
 
     fun loadCurrentJob() {
@@ -61,38 +63,39 @@ class HomeScreenViewModel(
             _isLoading.value = true
             try {
                 val currentDate = getCurrentDate()
-                var job = jobManagementUseCase.getJobByDate(currentDate)
+                jobManagementUseCase.getJobByDate(currentDate).collectLatest { job ->
+                    if (job == null) {
+                        // viewer is opening for the first time
+                        _isFirstVisit.value = true
 
-                if (job == null) {
-                    // viewer is opening for the first time
-                    _isFirstVisit.value = true
-
-                    job = DayOfJobUiModel.toEntity(DayOfJobUiModel(
-                        rapidoPartnerId = partnerId.toInt(),
-                        dayOfJob = currentDate,
-                        totalDistanceCovered = 0.0,
-                        totalEarnings = 0.0,
-                        totalTimeTaken = 0,
-                        totalJobsCompleted = 0,
-                        targetDistance = 0.0,
-                        targetEarnings = 0.0,
-                        targetTime = 0,
-                        targetJobs = 0,
-                        resultOfTheDay = null
-                    ))
-                    jobManagementUseCase.insertJob(job)
+                        val newJob = DayOfJobUiModel.toEntity(DayOfJobUiModel(
+                            rapidoPartnerId = partnerId.toInt(),
+                            dayOfJob = currentDate,
+                            totalDistanceCovered = 0.0,
+                            totalEarnings = 0.0,
+                            totalTimeTaken = 0,
+                            totalJobsCompleted = 0,
+                            targetDistance = 0.0,
+                            targetEarnings = 0.0,
+                            targetTime = 0,
+                            targetJobs = 0,
+                            resultOfTheDay = null
+                        ))
+                        jobManagementUseCase.insertJob(newJob)
+                        _currentJob.value = DayOfJobUiModel.fromEntity(newJob)
+                    } else {
+                        _currentJob.value = DayOfJobUiModel.fromEntity(job)
+                    }
                 }
-
-                _currentJob.value = DayOfJobUiModel.fromEntity(job)
-
             } catch (e: Exception) {
-                Log.e(TAG , "error in loading job data: ${e.message}")
+                Log.e(TAG, "error in loading job data: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
         }
     }
-    fun setDailyTargets(targetDistance: Double, targetTime: Int, targetEarnings: Double, targetJobs: Int) {
+
+    fun setDailyTargets(targetDistance: Double, targetTime: Int, targetEarnings: Double, targetJobs: Int = 0) {
         viewModelScope.launch {
             try {
                 _currentJob.value?.let { currentJob ->
@@ -117,12 +120,13 @@ class HomeScreenViewModel(
         viewModelScope.launch {
             try {
                 _currentJob.value?.let { currentJob ->
-                    // Update job with new ride information
+                    // Calculate new totals
                     val newTotalDistance = (currentJob.totalDistanceCovered ?: 0.0) + distance
                     val newTotalTime = (currentJob.totalTimeTaken ?: 0) + time
                     val newTotalEarnings = (currentJob.totalEarnings ?: 0.0) + fare
                     val newTotalJobs = (currentJob.totalJobsCompleted ?: 0) + 1
 
+                    // Check if targets are met
                     val targetsMet = checkIfTargetsMet(
                         newTotalDistance,
                         newTotalTime,
@@ -142,13 +146,16 @@ class HomeScreenViewModel(
                     jobManagementUseCase.updateJob(DayOfJobUiModel.toEntity(updatedJob))
                     _currentJob.value = updatedJob
                     _rideMessage.value = getRideMessage(newTotalTime)
+
+                    // Update user's total earnings
+                    settingsUseCase.updateUserEarnings(partnerId.toInt(), fare)
                 }
             } catch (e: Exception) {
-
-                Log.e(TAG , "error in adding ride data: ${e.message}")
+                Log.e(TAG, "error in adding ride: ${e.message}")
             }
         }
     }
+
     private fun checkIfTargetsMet(
         distance: Double,
         time: Int,
@@ -175,12 +182,29 @@ class HomeScreenViewModel(
                         currentJob
                     )
 
+                    // Update current day with final result
                     val updatedJob = currentJob.copy(
                         resultOfTheDay = targetsMet
                     )
-
                     jobManagementUseCase.updateJob(DayOfJobUiModel.toEntity(updatedJob))
-                    _currentJob.value = updatedJob
+
+                    // Create new entry for next day
+                    val nextDay = DayOfJobUiModel(
+                        rapidoPartnerId = partnerId.toInt(),
+                        dayOfJob = getCurrentDate(),
+                        totalDistanceCovered = 0.0,
+                        totalEarnings = 0.0,
+                        totalTimeTaken = 0,
+                        totalJobsCompleted = 0,
+                        targetDistance = 0.0,
+                        targetEarnings = 0.0,
+                        targetTime = 0,
+                        targetJobs = 0,
+                        resultOfTheDay = null
+                    )
+                    jobManagementUseCase.insertJob(DayOfJobUiModel.toEntity(nextDay))
+                    _currentJob.value = nextDay
+                    _isFirstVisit.value = true
                 }
             } catch (e: Exception) {
                 Log.e(TAG , "error in ending day: ${e.message}")
