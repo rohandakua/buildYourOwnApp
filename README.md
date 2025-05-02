@@ -2,42 +2,20 @@
 
 A comprehensive Android application designed to assist Rapido partners in managing their daily operations efficiently.
 
+Here the rapido partner can track their daily income and the distance they are driving to maintain their health. This apps make sure to remind them to care about they health also.
+They can login using their account that must be provided by rapido with password. 
+In future this app can integrate graphs and notifications to make it more interactive.
+
 ## Features
 
 ### 1. User Authentication
 - Secure login system for Rapido partners
-- OTP-based verification
-- Profile management
 
 ### 2. Ride Management
-- Real-time ride tracking
-- Ride history and analytics
 - Earnings tracking and reports
-- Daily/weekly/monthly performance metrics
 
-### 3. Navigation & Maps
-- Integrated Google Maps
-- Real-time route optimization
-- Turn-by-turn navigation
-- Traffic updates and alternative routes
-
-### 4. Earnings & Payments
+### 3. Earnings & Payments
 - Detailed earnings breakdown
-- Payment history
-- Withdrawal options
-- Incentive tracking
-
-### 5. Support & Help
-- In-app customer support
-- FAQ section
-- Emergency contact features
-- Issue reporting system
-
-### 6. Notifications
-- Real-time ride requests
-- Earnings updates
-- Important announcements
-- Customizable notification preferences
 
 ## Technical Implementation
 - Built with Kotlin
@@ -61,37 +39,26 @@ Check out our YouTube short demo: [Rapido Partner Helper App Demo](https://youtu
 ![Support Section](ss6.png)
 
 ## Known Bugs
-1. **Location Tracking Issues**
-   - Occasional GPS signal loss
-   - Inaccurate location updates in certain areas
-   - Battery drain during continuous tracking
-
-2. **Payment Processing**
+1. **Payment Processing**
    - Delayed payment status updates
-   - Occasional failed transaction notifications
-   - Withdrawal request processing delays
 
-3. **App Performance**
+2. **App Performance**
    - Memory leaks in long sessions
    - Slow loading times in poor network conditions
    - App crashes during heavy usage
 
-4. **UI/UX Issues**
-   - Inconsistent button states
-   - Text overflow in certain languages
-   - Navigation drawer lag
+3. **Overall income**
+   - Overall income is to be stored in firebase (to be implemented)
 
-5. **Notification System**
-   - Duplicate notifications
-   - Delayed push notifications
-   - Notification sound issues
+4. **Null pointer Issues**
+   - In some part of app there can be a Null pointer issue.
 
 ## Future Improvements
 - Implement offline mode
 - Add multi-language support
 - Enhance security features
 - Optimize battery usage
-- Improve real-time tracking accuracy
+- Implement performance graphs 
 
 ## Getting Started
 1. Clone the repository
@@ -101,9 +68,7 @@ Check out our YouTube short demo: [Rapido Partner Helper App Demo](https://youtu
 
 ## Requirements
 - Android 8.0 (API 26) or higher
-- Google Play Services
 - Internet connection
-- GPS enabled
 
 ## Contributing
 Feel free to submit issues and enhancement requests.
