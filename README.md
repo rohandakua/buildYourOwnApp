@@ -30,6 +30,9 @@ In future this app can integrate graphs and notifications to make it more intera
 ## Demo
 Check out our YouTube short demo: [Rapido Partner Helper App Demo](https://youtube.com/shorts/izKYgm1G6WI)
 
+Use user id  -   123456
+    password -   12345678    (this is to be in the firebase realtime db, no signin feature is provided)
+
 ## Screenshots
 ![Login Screen](ss1.png)
 ![Home Dashboard](ss2.png)
