@@ -5,7 +5,9 @@ plugins {
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization") version "2.0.21"
     alias(libs.plugins.google.gms.google.services)
+
 }
+
 
 android {
     namespace = "com.rohandakua.rapidopartnerhelperapp"
@@ -44,6 +46,7 @@ android {
     }
 }
 
+
 dependencies {
     /** firebase dependencies**/
     implementation(libs.firebase.database)
@@ -67,6 +70,9 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     /** Gson dependencies     check this  for latest versions https://github.com/google/gson   **/
     implementation("com.google.code.gson:gson:2.13.1")
+
+    /** lottie**/
+    implementation("com.github.LottieFiles:dotlottie-android:0.5.0") // 0.5.0 chcek libs.version.toml for updation
 
 
 

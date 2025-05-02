@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class SettingsUseCase(
     private val settingsRepository: SettingRepository
 ) {
-    suspend fun getDarkMode(): Flow<Boolean> {
+    fun getDarkMode(): Flow<Boolean> {
         return settingsRepository.getDarkMode()
     }
 
@@ -15,7 +15,7 @@ class SettingsUseCase(
         settingsRepository.saveUser(user)
     }
 
-    suspend fun getUser(): Flow<RapidoPartner?> {
+    fun getUser(): Flow<RapidoPartner?> {
         return settingsRepository.getUser()
     }
 
