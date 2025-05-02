@@ -48,13 +48,12 @@ import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainCardBackground
 import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainTextColor
 
 @Composable
-@Preview
 fun DailyTargetBox(
     modifier: Modifier = Modifier,
-    showDialog: Boolean = true,
-    onDismiss: () -> Unit = {},
-    onConfirm: (Double, Int, Double) -> Unit = { _, _, _ -> },
-    greetingText: String = "Good AfterNoon"
+    showDialog: Boolean ,
+    onDismiss: () -> Unit ,
+    onConfirm: (Double, Int, Double) -> Unit ,
+    greetingText: String
 ) {
     Box(
         modifier = modifier

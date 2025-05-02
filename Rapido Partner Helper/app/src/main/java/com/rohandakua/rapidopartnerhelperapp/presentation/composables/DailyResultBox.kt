@@ -50,26 +50,13 @@ import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainCardBackground
 import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainTextColor
 
 @Composable
-@Preview
 fun DailyResultBox(
-    modifier: Modifier = Modifier,
-    showDialog: Boolean = true,
-    onDismiss: () -> Unit = {},
-    onConfirm: () -> Unit = {},
-    greetingText: String = "Good AfterNoon",
-    dayOfJobUiModel: DayOfJobUiModel = DayOfJobUiModel(
-        rapidoPartnerId = 0,
-        dayOfJob = "11-11-2025",
-        totalDistanceCovered = 187.5,
-        totalEarnings = 2350.0,
-        totalTimeTaken = 320,
-        totalJobsCompleted = 12,
-        targetDistance = 100.0,
-        targetEarnings = 1500.0,
-        targetTime = 240,
-        targetJobs = 15,
-        resultOfTheDay = false
-    )
+    modifier: Modifier ,
+    showDialog: Boolean ,
+    onDismiss: () -> Unit ,
+    onConfirm: () -> Unit ,
+    greetingText: String ,
+    dayOfJobUiModel: DayOfJobUiModel
 
 ) {
     Box(

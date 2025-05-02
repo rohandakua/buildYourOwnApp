@@ -50,6 +50,7 @@ android {
 dependencies {
     /** firebase dependencies**/
     implementation(libs.firebase.database)
+    implementation(libs.androidx.runtime.livedata)
 
     /** Room dependencties **/
     val room_version = "2.7.1"
@@ -62,7 +63,7 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose-navigation:$koin_version")
 
     /** Navigation dependecies **/
-    val nav_version = "2.8.9"
+    val nav_version = "2.7.6"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     /** datastore dependencies **/

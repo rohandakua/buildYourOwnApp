@@ -1,5 +1,6 @@
 package com.rohandakua.rapidopartnerhelperapp.presentation.screen
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +21,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -31,28 +35,39 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.dotlottie.dlplayer.Mode
 import com.lottiefiles.dotlottie.core.compose.runtime.DotLottieController
 import com.lottiefiles.dotlottie.core.compose.ui.DotLottieAnimation
 import com.lottiefiles.dotlottie.core.util.DotLottieSource
 import com.rohandakua.rapidopartnerhelperapp.R
 import com.rohandakua.rapidopartnerhelperapp.domain.helperFunctions.getDistanceFeedback
+import com.rohandakua.rapidopartnerhelperapp.domain.helperFunctions.getGreetings
 import com.rohandakua.rapidopartnerhelperapp.domain.helperFunctions.gradientBrush
 import com.rohandakua.rapidopartnerhelperapp.domain.model.DayOfJobUiModel
+import com.rohandakua.rapidopartnerhelperapp.navigation.Screen
+import com.rohandakua.rapidopartnerhelperapp.presentation.composables.AddRideBox
+import com.rohandakua.rapidopartnerhelperapp.presentation.composables.DailyResultBox
 import com.rohandakua.rapidopartnerhelperapp.presentation.composables.NormalText
+import com.rohandakua.rapidopartnerhelperapp.presentation.viewModel.HomeScreenViewModel
 import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainBackgroundColor
 import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainCardBackground
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 
 @Composable
-@Preview(showBackground = true)
 fun HomeScreen(
+    navController: NavHostController,
+    modifier: Modifier,
+    partnerId : Int
 
 ) {
+    val homeScreenViewModel: HomeScreenViewModel = koinViewModel{ parametersOf(partnerId) }
     val dotLottieController = remember { DotLottieController() }
-    val greetingMessage = "Good Morning, Rohandakua" // homeScreenViewModel.greatingMessage
+    val greetingMessage =  homeScreenViewModel.greatingMessage
     val orientation =
-        LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT
+        LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     val dayOfJobUiModel = DayOfJobUiModel(          // homeScreenViewModel.currentJob
         rapidoPartnerId = 0,
@@ -67,6 +82,38 @@ fun HomeScreen(
         targetJobs = 15,
         resultOfTheDay = false
     )
+
+    var showAddRideDialog by remember { mutableStateOf(false) }
+    var showEndDayDialog by remember { mutableStateOf(false) }
+
+    if (showAddRideDialog) {
+        AddRideBox(
+            modifier = modifier,
+            showDialog = showAddRideDialog,
+            onDismiss = { showAddRideDialog = false },
+            onConfirm = { distance, timeTaken, fare ->
+                // Handle the confirmed values here
+                homeScreenViewModel.addRide(distance,timeTaken, fare)
+                showAddRideDialog = false
+            }
+        )
+    }
+    if (showEndDayDialog) {
+        DailyResultBox(
+            modifier = Modifier,
+            showDialog = showEndDayDialog,
+            onDismiss = { showEndDayDialog = false },
+            onConfirm = {
+                homeScreenViewModel.endDay()
+                showEndDayDialog = false
+            },
+            dayOfJobUiModel = dayOfJobUiModel,
+            greetingText = greetingMessage.value?: "Hello "
+
+        )
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -84,9 +131,9 @@ fun HomeScreen(
             ) {
                 // three line
                 Column(
-                    modifier = Modifier.fillMaxWidth(.2f)
-                        .padding(top = 30.dp , start = 10.dp)
-                    ,
+                    modifier = Modifier
+                        .fillMaxWidth(.2f)
+                        .padding(top = 30.dp, start = 10.dp),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top
 
@@ -101,30 +148,31 @@ fun HomeScreen(
                                     brush = gradientBrush,
                                     alpha = 1f
                                 )
-                            }.clickable {
-                                // move to setting scree TODO
-
+                            }
+                            .clickable {
+                                navController.navigate(Screen.Setting.route)
                             }
 
                     )
                 }
                 Column(
-                    modifier = Modifier.fillMaxWidth(.60f)
-                        .padding(top = 30.dp)
-                            ,
+                    modifier = Modifier
+                        .fillMaxWidth(.60f)
+                        .padding(top = 30.dp),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
 
                 ) {
                     NormalText(
-                        greetingMessage, textSize = 28
+                        greetingMessage.value?: "Hello", textSize = 28
 
                     )
                 }
 
                 Column(
-                    modifier = Modifier.width(200.dp).height(200.dp)
-                    ,
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(200.dp),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top
 
@@ -152,7 +200,7 @@ fun HomeScreen(
                     disabledContainerColor = mainBackgroundColor
                 ),
                 modifier = Modifier
-                    .fillMaxWidth( .85f)
+                    .fillMaxWidth(.85f)
                     .fillMaxHeight(.6f)
                     .padding(horizontal = 10.dp)
             ) {
@@ -162,28 +210,28 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp)
 
                 ) {
-                        Spacer(Modifier.size(8.dp))
-                        NormalText(
-                            text = "Distance: ${dayOfJobUiModel.totalDistanceCovered} km",
-                            textSize = 28
-                        )
-                        NormalText(
-                            text = getDistanceFeedback(dayOfJobUiModel.totalDistanceCovered!!),
-                            textSize = 18,
-                            modifier =  Modifier.padding(start = 20.dp)
-                        )
-                        Spacer(Modifier.size(20.dp))
-                        NormalText(
-                            text = "Time: ${dayOfJobUiModel.totalTimeTaken} min",
-                            textSize = 28
-                        )
-                        Spacer(Modifier.size(8.dp))
-                        NormalText(
-                            text = "Earnings: ₹ ${dayOfJobUiModel.totalEarnings}",
-                            textSize = 28
-                        )
+                    Spacer(Modifier.size(8.dp))
+                    NormalText(
+                        text = "Distance: ${dayOfJobUiModel.totalDistanceCovered} km",
+                        textSize = 28
+                    )
+                    NormalText(
+                        text = getDistanceFeedback(dayOfJobUiModel.totalDistanceCovered!!),
+                        textSize = 18,
+                        modifier = Modifier.padding(start = 20.dp)
+                    )
+                    Spacer(Modifier.size(20.dp))
+                    NormalText(
+                        text = "Time: ${dayOfJobUiModel.totalTimeTaken} min",
+                        textSize = 28
+                    )
+                    Spacer(Modifier.size(8.dp))
+                    NormalText(
+                        text = "Earnings: ₹ ${dayOfJobUiModel.totalEarnings}",
+                        textSize = 28
+                    )
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
 
                 }
@@ -216,7 +264,7 @@ fun HomeScreen(
                     )
                     NormalText(
                         text = "End Day",
-                        textSize =  15
+                        textSize = 15
                     )
                 }
 
