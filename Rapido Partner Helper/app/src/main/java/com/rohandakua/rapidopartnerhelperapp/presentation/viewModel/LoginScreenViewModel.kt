@@ -59,6 +59,9 @@ class LoginScreenViewModel(
             settingsUseCase.saveUser(RapidoPartnerUiModel.toEntity(user))
         }
     }
+    fun logout (){
+        _loginResult.value = false
+    }
 
 
 

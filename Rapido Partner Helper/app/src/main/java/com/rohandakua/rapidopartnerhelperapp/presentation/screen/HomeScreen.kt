@@ -1,0 +1,255 @@
+package com.rohandakua.rapidopartnerhelperapp.presentation.screen
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.dotlottie.dlplayer.Mode
+import com.lottiefiles.dotlottie.core.compose.runtime.DotLottieController
+import com.lottiefiles.dotlottie.core.compose.ui.DotLottieAnimation
+import com.lottiefiles.dotlottie.core.util.DotLottieSource
+import com.rohandakua.rapidopartnerhelperapp.R
+import com.rohandakua.rapidopartnerhelperapp.domain.helperFunctions.getDistanceFeedback
+import com.rohandakua.rapidopartnerhelperapp.domain.helperFunctions.gradientBrush
+import com.rohandakua.rapidopartnerhelperapp.domain.model.DayOfJobUiModel
+import com.rohandakua.rapidopartnerhelperapp.presentation.composables.NormalText
+import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainBackgroundColor
+import com.rohandakua.rapidopartnerhelperapp.ui.theme.mainCardBackground
+
+
+@Composable
+@Preview(showBackground = true)
+fun HomeScreen(
+
+) {
+    val dotLottieController = remember { DotLottieController() }
+    val greetingMessage = "Good Morning, Rohandakua" // homeScreenViewModel.greatingMessage
+    val orientation =
+        LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT
+
+    val dayOfJobUiModel = DayOfJobUiModel(          // homeScreenViewModel.currentJob
+        rapidoPartnerId = 0,
+        dayOfJob = "11-11-2025",
+        totalDistanceCovered = 10.5,
+        totalEarnings = 2350.0,
+        totalTimeTaken = 320,
+        totalJobsCompleted = 12,
+        targetDistance = 100.0,
+        targetEarnings = 1500.0,
+        targetTime = 240,
+        targetJobs = 15,
+        resultOfTheDay = false
+    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = mainBackgroundColor)  // Color(0xFF10110f)
+            .safeDrawingPadding()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(60.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+
+            ) {
+                // three line
+                Column(
+                    modifier = Modifier.fillMaxWidth(.2f)
+                        .padding(top = 30.dp , start = 10.dp)
+                    ,
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top
+
+                ) {
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.threeline),
+                        contentDescription = "end day", tint = Color.Black,
+                        modifier = Modifier
+                            .drawBehind {
+                                drawCircle(
+                                    brush = gradientBrush,
+                                    alpha = 1f
+                                )
+                            }.clickable {
+                                // move to setting scree TODO
+
+                            }
+
+                    )
+                }
+                Column(
+                    modifier = Modifier.fillMaxWidth(.60f)
+                        .padding(top = 30.dp)
+                            ,
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center
+
+                ) {
+                    NormalText(
+                        greetingMessage, textSize = 28
+
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.width(200.dp).height(200.dp)
+                    ,
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top
+
+                ) {
+                    // rapido logo wihh greetigns
+                    DotLottieAnimation(
+                        source = DotLottieSource.Url("https://lottie.host/3da2776c-0357-4815-851f-d5a276f5eaa7/63auvFhzz9.lottie"),
+                        autoplay = true,
+                        loop = true,
+                        speed = 1f,
+                        useFrameInterpolation = true,
+                        playMode = Mode.FORWARD,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        controller = dotLottieController
+                    )
+                }
+
+            }
+
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = mainCardBackground,
+                    disabledContainerColor = mainBackgroundColor
+                ),
+                modifier = Modifier
+                    .fillMaxWidth( .85f)
+                    .fillMaxHeight(.6f)
+                    .padding(horizontal = 10.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+
+                ) {
+                        Spacer(Modifier.size(8.dp))
+                        NormalText(
+                            text = "Distance: ${dayOfJobUiModel.totalDistanceCovered} km",
+                            textSize = 28
+                        )
+                        NormalText(
+                            text = getDistanceFeedback(dayOfJobUiModel.totalDistanceCovered!!),
+                            textSize = 18,
+                            modifier =  Modifier.padding(start = 20.dp)
+                        )
+                        Spacer(Modifier.size(20.dp))
+                        NormalText(
+                            text = "Time: ${dayOfJobUiModel.totalTimeTaken} min",
+                            textSize = 28
+                        )
+                        Spacer(Modifier.size(8.dp))
+                        NormalText(
+                            text = "Earnings: ₹ ${dayOfJobUiModel.totalEarnings}",
+                            textSize = 28
+                        )
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+
+                }
+
+
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth()
+
+            ) {
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(.5f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_close_24),
+                        contentDescription = "end day", tint = Color.Black,
+                        modifier = Modifier
+                            .drawBehind {
+                                drawCircle(
+                                    brush = gradientBrush,
+                                    alpha = 1f
+                                )
+                            }
+
+                    )
+                    NormalText(
+                        text = "End Day",
+                        textSize =  15
+                    )
+                }
+
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_add_circle_24),
+                        contentDescription = "add new ride", tint = Color.Black,
+                        modifier = Modifier
+                            .drawBehind {
+                                drawCircle(
+                                    brush = gradientBrush,
+                                    alpha = 1f
+                                )
+                            }
+
+                    )
+                    NormalText(
+                        text = "Add Ride",
+                        textSize = 15
+                    )
+                }
+
+            }
+
+
+        }
+
+
+    }
+}

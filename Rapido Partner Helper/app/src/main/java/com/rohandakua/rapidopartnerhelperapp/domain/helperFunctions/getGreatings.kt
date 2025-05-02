@@ -14,5 +14,6 @@ fun getGreetings(name: String): String {
         else -> "Rest well"
     }
 
-    return "$greeting, $name!"
+    val firstName = name.trim().split(" ").firstOrNull() ?: "there"
+    return "$greeting, $firstName!"
 }
